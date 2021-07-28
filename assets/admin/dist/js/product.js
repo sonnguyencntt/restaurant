@@ -35,11 +35,11 @@ var btnCust = '<button type="button" class="btn btn-secondary" title="Add pictur
 
 function validate()
 {
-  if (func.ValidateId(["product_image", "product_name" , "price" ,"category","store","active"], [], []) === true) {
+  if (func.ValidateId(["product_image", "product_name" , "price" ,"category","active"], [], []) === true) {
     return true
 }
 return false;}
 function removeFunc($id) {
-  $('.alert-remove').html("<p>Do you really want to remove User Id :  " + $id + "?</p>")
+  $('.alert-remove').html("<p>Do you really want to remove Product Id :  " + $id + "?</p>")
   $("[name = remove_id_product]").val($id);
 }

@@ -29,40 +29,72 @@ class MyFunction
     public static function listMenu()
     {
         return array(
-            0 => array('name' => 'dashboard', 'href' => '?controller=dashboard&action=index&type=admin', 'id' => PAGE_ID, 'level' => 1, 'icon' =>  'fa fa-dashboard'),
-            1 => array('name' => 'user', 'href' => '?controller=user&action=index&type=admin', 'id' => PAGE_ID, 'level' => 1, 'icon' =>  'fa fa-files-o'),
-            2 => array(
-                'name' => 'group',
+            0 => array('name' => 'Bảng điều khiển', 'href' => '?controller=dashboard&action=index&type=admin', 'id' => PAGE_ID, 'level' => 1, 'icon' =>  'fa fa-dashboard'),
+            1 => array(
+                'name' => 'Người dùng',
                 'page' => array(
-                    array('name' => 'manage', 'href' => '?controller=group&action=index&type=admin', 'id' => PAGE_ID, 'action' => 'index'),
-                    array('name' => 'create', 'href' => '?controller=group&action=create&type=admin', 'id' => PAGE_ID, 'action' => 'create')
+                    array('name' => 'Danh sách', 'href' => '?controller=user&action=index&type=admin', 'id' => PAGE_ID, 'action' => 'index'),
+                    array('name' => 'Them mới', 'href' => '?controller=user&action=create&type=admin', 'id' => PAGE_ID, 'action' => 'create')
+                ),
+                'level' => 2,
+                'icon' =>  'fa fa-files-o',
+                'href' => '?controller=user&action=index&type=admin'
+
+            ),
+            2 => array(
+                'name' => 'Nhóm người dùng',
+                'page' => array(
+                    array('name' => 'Danh sách', 'href' => '?controller=group&action=index&type=admin', 'id' => PAGE_ID, 'action' => 'index'),
+                    array('name' => 'Them mới', 'href' => '?controller=group&action=create&type=admin', 'id' => PAGE_ID, 'action' => 'create')
                 ),
                 'level' => 2,
                 'icon' =>  'fa fa-files-o',
                 'href' => '?controller=group&action=index&type=admin'
 
             ),
-            3 => array('name' => 'product', 'href' => '?controller=product&action=index&type=admin', 'id' => PAGE_ID, 'level' => 1, 'icon' =>  'fa fa-files-o'),
-            4 => array('name' => 'order', 'href' => '?controller=order&action=index&type=admin', 'id' => PAGE_ID, 'level' => 1, 'icon' =>  'fa fa-files-o'),
-
-            5 => array(
-                'name' => 'category',
+            3 => array('name' => 'Khu vực', 'href' => '?controller=store&action=index&type=admin', 'id' => PAGE_ID, 'level' => 1, 'icon' =>  'fa fa-files-o'),
+            4 => array(
+                'name' => 'Sản phẩm',
                 'page' => array(
-                    array('name' => 'manage', 'href' => '?controller=category&action=index&type=admin', 'id' => PAGE_ID, 'action' => 'index'),
-                    array('name' => 'create', 'href' => '?controller=category&action=create&type=admin', 'id' => PAGE_ID, 'action' => 'create')
+                    array('name' => 'Danh sách', 'href' => '?controller=product&action=index&type=admin', 'id' => PAGE_ID, 'action' => 'index'),
+                    array('name' => 'Thêm mới', 'href' => '?controller=product&action=create&type=admin', 'id' => PAGE_ID, 'action' => 'create')
                 ),
                 'level' => 2,
                 'icon' =>  'fa fa-files-o',
-                'href' => '?controller=category&action=index&type=admin'
+                'href' => '?controller=product&action=index&type=admin'
 
             ),
 
-            6 => array('name' => 'report', 'href' => '?controller=report&action=index&type=admin', 'id' => PAGE_ID, 'level' => 1, 'icon' =>  'fa fa-files-o'),
+            5 => array('name' => 'Danh mục sản phẩm', 'href' => '?controller=category&action=index&type=admin', 'id' => PAGE_ID, 'level' => 1, 'icon' =>  'fa fa-files-o'),
+            // 5 => array(
+            //     'name' => 'Danh mục sản phẩm',
+            //     'page' => array(
+            //         array('name' => 'Danh sách', 'href' => '?controller=category&action=index&type=admin', 'id' => PAGE_ID, 'action' => 'index'),
+            //         array('name' => 'Thêm mới' , 'href' => '?controller=category&action=create&type=admin', 'id' => PAGE_ID, 'action' => 'create')
+            //     ),
+            //     'level' => 2,
+            //     'icon' =>  'fa fa-files-o',
+            //     'href' => '?controller=category&action=index&type=admin'
 
-            7 => array('name' => 'company', 'href' => '?controller=company&action=index&type=admin', 'id' => PAGE_ID, 'level' => 1, 'icon' =>  'fa fa-files-o'),
-            8 => array('name' => 'profile', 'href' => '?controller=profile&action=index&type=admin', 'id' => PAGE_ID, 'level' => 1, 'icon' =>  'fa fa-files-o'),
-            9 => array('name' => 'setting', 'href' => '?controller=setting&action=index&type=admin', 'id' => PAGE_ID, 'level' => 1, 'icon' =>  'fa fa-wrench'),
-            10 => array('name' => 'logout', 'href' => '?controller=auth&action=logout&type=admin', 'id' => PAGE_ID, 'level' => 1, 'icon' =>  'glyphicon glyphicon-log-out'),
+            // ),
+            6 => array('name' => 'Bàn', 'href' => '?controller=table&action=index&type=admin', 'id' => PAGE_ID, 'level' => 1, 'icon' =>  'fa fa-files-o'),
+         
+            //  6 => array(
+            //     'name' => 'Bàn',
+            //     'page' => array(
+            //         array('name' => 'Danh sách', 'href' => '?controller=table&action=index&type=admin', 'id' => PAGE_ID, 'action' => 'index'),
+            //         array('name' => 'Thêm mới', 'href' => '?controller=table&action=create&type=admin', 'id' => PAGE_ID, 'action' => 'create')
+            //     ),
+            //     'level' => 2,
+            //     'icon' =>  'fa fa-files-o',
+            //     'href' => '?controller=table&action=index&type=admin'
+
+            // ),
+
+            7 => array('name' => 'Công ty', 'href' => '?controller=company&action=index&type=admin', 'id' => PAGE_ID, 'level' => 1, 'icon' =>  'fa fa-files-o'),
+            8 => array('name' => 'Hồ sơ', 'href' => '?controller=profile&action=index&type=admin', 'id' => PAGE_ID, 'level' => 1, 'icon' =>  'fa fa-files-o'),
+            9 => array('name' => 'Cài đặt', 'href' => '?controller=setting&action=index&type=admin', 'id' => PAGE_ID, 'level' => 1, 'icon' =>  'fa fa-wrench'),
+           
         );
     }
     public static function validateRegrex($list)
@@ -94,9 +126,9 @@ class MyFunction
                 'bill' => array('index'),
                 'user' => array('index' => array('isLogin' => false), 'insert' => array('isLogin' => false), 'delete' => array('isLogin' => false), 'edit' => array('isLogin' => false), 'update' => array('isLogin' => false), 'delete' => array('isLogin' => false)),
                 'group' => array('index' => array('isLogin' => true), 'create', 'insert' => array('isLogin' => true), 'update' => array('isLogin' => true), 'edit' => array('isLogin' => true), 'delete' => array('isLogin' => true)),
-                'report' => array('index' => array('isLogin' => false), 'report_store', 'search', 'search_store'),
+               
                 'product' => array('index' => array('isLogin' => false), 'insert' => array('isLogin' => false), 'delete' => array('isLogin' => false), 'edit' => array('isLogin' => false), 'update' => array('isLogin' => false)),
-                'order' => array('index' => array('isLogin' => false)),
+              
                 'company' => array('index' => array('isLogin' => false)),
                 'profile' => array('index' => array('isLogin' => false)),
                 'setting' => array('index' => array('isLogin' => false)),

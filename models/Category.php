@@ -3,24 +3,19 @@ class Category extends DB
 {
 
     public $id;
-    public $category_id;
-    public $store_id;
     public $name;
-    public $price;
-    public $description;
-    public $image;
     public $active;
+    public $id_category;
+  
 
-    public function __construct($id = null, $category_id = null, $store_id = null, $name = null, $price = null,$description = null, $image = null , $active = null)
+    public function __construct($id = null,$id_category=null, $name = null, $active=null)
     {
         $this->id = $id;
-        $this->category_id = $category_id;
-        $this->store_id = $store_id;
         $this->name = $name;
-        $this->price = $price;
-        $this->description = $description;
-        $this->image = $image;
         $this->active = $active;
+        $this->id_category = $id_category;
+
+        
         
         self::$getDB =  $this->connect();
 
@@ -31,13 +26,13 @@ class Category extends DB
     {
         
         $list = array();
-        $result =self::$getDB->query("SELECT * FROM products");
+        $result =self::$getDB->query("SELECT * FROM category");
         if($result){
             if(mysqli_num_rows($result) > 0)
             {
                 while ($row=mysqli_fetch_assoc($result)) {
                   
-                    array_push($list,new self($row["id"],$row['category_id'],$row['store_id'], $row['name'], $row['price'], $row['description'] , $row['image'] , $row['active']));
+                    array_push($list,new self($row["id"],$row['id_category'],$row['name'],$row['active']));
                 }
                 return $list;
             }
@@ -48,22 +43,23 @@ class Category extends DB
     }
     public function delete($id)
     {
-        $result = self::$getDB->query("DELETE FROM products WHERE `id` = '$id'");
+        $result = Category::$getDB->query("DELETE FROM category WHERE `id_category` = '$id'");
         if($result){
-           if(mysqli_affected_rows(self::$getDB) > 0){
+           if(mysqli_affected_rows(Category::$getDB) > 0){
                return true;
            }
         }
         return false;
     }
 
-    public function insert($name, $price, $category_id, $store_id, $active,$image,$description = '')
+
+    public function insert($name,$active,$datenow)
     {
       
-        $result = self::$getDB->query("INSERT INTO products (`id`,`category_id`,`store_id`, `name` , `price` , `description` , `image` , `active`) VALUES 
-        (null , '$category_id' , '$store_id' , '$name' , '$price' , '$description', '$image' ,'$active')");
+        $result = Category::$getDB->query("INSERT INTO category (`id`,`id_category`,`name`, `active`) VALUES 
+        (null , '$datenow' , '$name' , $active)");
         if($result){
-           if(mysqli_affected_rows(self::$getDB) > 0){
+           if(mysqli_affected_rows(Category::$getDB) > 0){
                return true;
            }
         }
@@ -75,13 +71,13 @@ class Category extends DB
     {
         $list = array();
 
-        $result =self::$getDB->query("SELECT * FROM products WHERE id = '$id'");
+        $result =self::$getDB->query("SELECT * FROM category WHERE id_category = '$id'");
         if($result){
             if(mysqli_num_rows($result) > 0)
             {
                 while ($row=mysqli_fetch_assoc($result)) {
                   
-                    array_push($list,new self($row["id"],$row['category_id'],$row['store_id'], $row['name'], $row['price'], $row['description'] , $row['image'] , $row['active']));
+                    array_push($list,new self($row["id"],$row['id_category'], $row['name'], $row['active']));
                 }
                 return $list;
             }
@@ -90,15 +86,11 @@ class Category extends DB
     }   
            
         
-    public function update($id,$name, $price, $category_id, $store_id, $active,$image,$description = '')
+    public function update($id_category , $name , $active)
     {
-        if(isset($image))
-        $result = self::$getDB->query("UPDATE `products` SET `name` = '$name' , `price` = '$price' , `category_id` = '$category_id' , `image` = '$image' , `active` = '$active' , `description` = '$description' WHERE `id` = $id");
-        else
-        $result = self::$getDB->query("UPDATE `products` SET `name` = '$name' , `price` = '$price' , `category_id` = '$category_id' , `active` = '$active' , `description` = '$description' WHERE `id` = $id");
-
+        $result = Category::$getDB->query("UPDATE `category` SET `name` = '$name' , `active` = $active WHERE `category`.`id_category` = '$id_category'");
         if($result){
-           if(mysqli_affected_rows(self::$getDB) >= 0){
+           if(mysqli_affected_rows(Category::$getDB) >= 0){
                return true;
            }
         }
@@ -107,7 +99,7 @@ class Category extends DB
     public function count()
     {
         $count = 0;
-        $result =User::$getDB->query("SELECT COUNT(*) as `count` FROM stores");
+        $result =User::$getDB->query("SELECT COUNT(*) as `count` FROM category");
         if($result){
             while ($row=mysqli_fetch_assoc($result)) {
                 $count = $row['count'];  

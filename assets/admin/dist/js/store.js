@@ -51,7 +51,7 @@ $("#createForm").submit(function (e) {
       $(".progress-bar").text(percenTage + "%");
     }, 500);
 
-    callApi("?controller=product&type=admin&action=insert", { name: this.store_name.value, active: this.active.value }).done(function (data) {
+    callApi("?controller=store&type=admin&action=insert", { name: this.store_name.value, active: this.active.value }).done(function (data) {
       var timer = setInterval(function () {
         percenTage = percenTage + 25;
         IncreasePer("progress-bar", percenTage, timer, form,data)}
@@ -66,7 +66,7 @@ function IncreasePer_remove(progress, width, timer, data, form) {
   if (width > 100) {
     clearInterval(timer);
     func.undisableModalId("removeModal");
-    func.hideElementId(['progress-remove']);
+    func.hideElementId(['progress-remove']); 
     $("#" + progress).css('width', "0%");
     $("#" + progress).text("0%");
     $("#removeModal").modal('hide');
@@ -102,7 +102,7 @@ $("#removeForm").submit(function (e) {
     $(".progress-bar-remove").css("width", percenTage + "%");
     $(".progress-bar-remove").text(percenTage + "%");
   }, 500);
-  callApi("?controller=product&type=admin&action=delete", { id_store: form.remove_id_store.value }).done(function (data) {
+  callApi("?controller=store&type=admin&action=delete", { id_store: form.remove_id_store.value }).done(function (data) {
 
     var timer = setInterval(function () {
       percenTage = percenTage + 25;
@@ -123,7 +123,8 @@ function editFunc($id, $tr) {
   func.disableAttrId(["submit-edit"]);
 
 
-  callApi("?controller=product&type=admin&action=edit", { id_store: $id }).done(function (data) {
+  callApi("?controller=store&type=admin&action=edit", { id_store: $id }).done(function (data) {
+    console.log(data);
     $("#edit_id_store").val(data.data[0].id_store);
     $("#edit_store_name").val(data.data[0].name);
     $("#edit_active").val(data.data[0].active);
@@ -184,7 +185,7 @@ $("#updateForm").submit(function(e) {
 
 
 
-    callApi("?controller=product&type=admin&action=update", { name: form.edit_store_name.value, active: form.edit_active.value , id_store : form.edit_id_store.value }).done(function (data) {
+    callApi("?controller=store&type=admin&action=update", { name: form.edit_store_name.value, active: form.edit_active.value , id_store : form.edit_id_store.value }).done(function (data) {
 
       var timer = setInterval(function () {
         percenTage = percenTage + 25;

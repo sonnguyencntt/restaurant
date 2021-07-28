@@ -19,21 +19,28 @@ class DashboardController extends BaseController
         $this->folder = 'admin';
         $this->pageId = 1;
         $this->actionId = $actionId;
-        MyFunction::loadModule("models.Product");
+        MyFunction::loadModule("models.Store");
         MyFunction::loadModule("models.Company");
-        MyFunction::loadModule("models.Order");
+        MyFunction::loadModule("models.Category");
+        MyFunction::loadModule("models.Product");
 
-        $this->productModal = new Product();
+
+
+        $this->storeModal = new Store();
         $this->companyModal = new Company();
-        $this->orderModal = new Order();
+        $this->categoryModal = new Category();
+        $this->ProductModal = new Product();
+
+
     }
 
     public function index()
     {
+     
         $count_User = $this->userModal->count();
-        $count_Product = $this->productModal->count();
-        $count_Company = $this->companyModal->count();
-        $count_Order = $this->orderModal->count();
+        $count_Store = $this->storeModal->count();
+        $count_Product = $this->ProductModal->count();
+        $count_Category = $this->categoryModal->count();
 
 
 
@@ -42,9 +49,9 @@ class DashboardController extends BaseController
             array(
                 'title_content' => ucfirst($GLOBALS['CONTROLLER']),
                 'count_user' => $count_User,
-                'count_product' => $count_Product,
-                'count_company' => $count_Company,
-                'count_order' => $count_Order,
+                'count_store' => $count_Store,
+                'count_product' =>$count_Product,
+                'count_order' => $count_Category,
                 'userGroup' => $this->userGroup,
             ),
             'layouts.application'

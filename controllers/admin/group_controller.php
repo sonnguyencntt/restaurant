@@ -1,6 +1,5 @@
 <?php
 
-use function PHPSTORM_META\elementType;
 
 MyFunction::loadModule('controllers.base_controller');
 
@@ -173,7 +172,6 @@ class GroupController extends BaseController
                     }
                 }
             }
-            var_dump($permission);
 
             $permission = json_encode($permission);
             $result = $this->groupModal->update($name, $permission, $id_group);

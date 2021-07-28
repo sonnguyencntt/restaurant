@@ -30,7 +30,6 @@
             
            
             $result = $this->userModal->selectId($email,$password);
-            var_dump($result);
             if(count($result) > 0)
             {
                 $_SESSION['user'] = json_encode($result);

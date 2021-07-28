@@ -2,9 +2,35 @@
   <!-- Small boxes (Stat box) -->
   <div class="row">
     <div class="col-md-12 col-xs-12">
+  
     <div id="messages">
+        <?php
+      $message = '';
+      $status= '';
+      $action = 'hide-elm';
+      if (isset($_SESSION['message-fail-uid'])) 
+      {
+        $status = 'danger';
+        $message =  MyFunction::get_message('message-fail-uid');
+        $action = 'show-elm';
+      }
+
+      if(isset($_SESSION['message-success-uid']))
+      {
+        $status = 'success';
+        $message =  MyFunction::get_message('message-success-uid');
+        $action = 'show-elm';
+      }
+
+
+
+
+      ?>
+        <div class="alert alert-<?= $status ?> alert-dismissible <?= $action ?>" role="alert" >
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button
+        ><strong> <span class="glyphicon glyphicon-ok-sign"></span> </strong><?= $message; ?></div>
       </div>
-      <button class="btn btn-primary <?= $access['insert'] ?>" data-toggle="modal"  data-target="#addModal">Add User</button>
+      <a href="?controller=user&type=admin&action=create" class="btn btn-primary <?= $access['insert'] ?>">Add Product</a>
       <br /> <br />
 
 
@@ -49,7 +75,7 @@
 
 
 
-                  <td class="<?= $access['td_action'] ?>"><button type="button" class="btn btn-default <?= $access['update'] ?>" onclick="editFunc(<?php echo '\'' . $value->id_user . '\'' ?>, this)" data-toggle="modal" data-target="#editModal"><i class="fa fa-pencil"></i></button> <button type="button" class="btn btn-default <?= $access['delete'] ?>" onclick="removeFunc(<?php echo '\'' . $value->id_user . '\'' ?>, this)" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button></td>
+                     <td class="<?= $access['td_action'] ?>"><a href = "?controller=user&type=admin&action=edit&id=<?= $value->id_user ?>" class="btn btn-default <?= $access['update'] ?>" ><i class="fa fa-pencil"></i></a> <button type="button" class="btn btn-default <?= $access['delete'] ?>" onclick="removeFunc(<?php echo '\'' . $value->id_user . '\'' ?>, this)" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button></td>
 
                 </tr>
 

@@ -16,8 +16,9 @@
             if((isset($userGroup[$stringUrl[2]][$stringUrl[0]][$stringUrl[1]]['isLogin']) and $userGroup[$stringUrl[2]][$stringUrl[0]][$stringUrl[1]]['isLogin']) or $data['name'] == "logout" or !isset($userGroup[$stringUrl[2]][$stringUrl[0]][$stringUrl[1]]['isLogin']))
             {
                 $name = ucfirst($data['name']);
+               
                 $active = null;
-                if($data['name'] == $GLOBALS['CONTROLLER'])
+                if($stringUrl[0] == $GLOBALS['CONTROLLER'])
                 {
                     $active = 'active';
                 }
@@ -52,7 +53,7 @@
                         and $page['name'] == 'create' and !$userGroup[$stringUrl[2]][$stringUrl[0]]['insert']['isLogin']){
                             $insert = 'hide-elm';
                         }
-                        if($page['action'] == $GLOBALS['ACTION'] and $data['name'] == $GLOBALS['CONTROLLER'])
+                        if($page['action'] == $GLOBALS['ACTION'] and $stringUrl[0] == $GLOBALS['CONTROLLER'])
                         {
                             $active = 'active';
                         }

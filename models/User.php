@@ -11,9 +11,11 @@ class User extends DB
     public $lastname;
     public $phone;
     public $gender;
+    public $image;
+    public $store;
 
 
-    public function __construct($id_user = null, $username = null, $password  = null, $email = null, $fristname = null, $lastname = null, $phone = null, $gender = null, $id_group = null, $group_name = null, $permission = null)
+    public function __construct($id_user = null, $username = null, $password  = null, $email = null, $fristname = null, $lastname = null, $phone = null, $gender = null, $id_group = null, $group_name = null, $permission = null ,$image = null,$store=null)
     {
         $this->id_user = $id_user;
         $this->username = $username;
@@ -23,7 +25,8 @@ class User extends DB
         $this->lastname = $lastname;
         $this->phone = $phone;
         $this->gender = $gender;
-
+        $this->image = $image;
+        $this->store = $store;
         self::$getDB =  $this->connect();
         MyFunction::loadModule("models.Group");
         $this->table_group = new Group($id_group, $group_name, $permission);
@@ -70,7 +73,7 @@ class User extends DB
             if (mysqli_num_rows($result) > 0) {
                 while ($row = mysqli_fetch_assoc($result)) {
                     if (password_verify($password, $row['password'])) {
-                        array_push($list, new self($row["id_user"], $row['username'], null, $row['email'], $row['firstname'], $row['lastname'], $row['phone'], $row['gender'], $row['group'], $row['group_name']));
+                        array_push($list, new self($row["id_user"], $row['username'], null, $row['email'], $row['firstname'], $row['lastname'], $row['phone'], $row['gender'], $row['group'], $row['group_name'] , null,$row['link']));
                         return $list;
                     }
                 }
@@ -98,7 +101,7 @@ class User extends DB
             if (mysqli_num_rows($result) > 0) {
                 while ($row = mysqli_fetch_assoc($result)) {
 
-                    array_push($list, new self($row["id_user"], $row['username'], null, $row['email'], $row['firstname'], $row['lastname'], $row['phone'], $row['gender'], $row['group'], $row['group_name']));
+                    array_push($list, new self($row["id_user"], $row['username'], null, $row['email'], $row['firstname'], $row['lastname'], $row['phone'], $row['gender'], $row['group'], $row['group_name'],null,$row['link'],$row['store_id']));
                 }
                 return $list;
             }
@@ -121,10 +124,10 @@ class User extends DB
             return $list;
         }
     }
-    public function insert($id_user, $username, $password, $email, $fname, $lname, $phone, $gender, $store_id, $groups)
+    public function insert($id_user, $username, $password, $email, $fname, $lname, $phone, $gender,$target_file, $store_id, $groups)
     {
         $password = password_hash($password, PASSWORD_DEFAULT);
-        $result = self::$getDB->query("INSERT INTO `users` (`id`, `id_user`, `username`, `password`, `email`, `firstname`, `lastname`, `phone`, `gender`, `store_id`, `group`) VALUES (NULL, '$id_user', '$username', '$password', '$email', '$fname', '$lname', '$phone', '$gender', '$store_id', '$groups')");
+        $result = self::$getDB->query("INSERT INTO `users` (`id`, `id_user`, `username`, `password`, `email`, `firstname`, `lastname`, `phone`, `gender`,`link`, `store_id`, `group`) VALUES (NULL, '$id_user', '$username', '$password', '$email', '$fname', '$lname', '$phone', '$gender','$target_file', '$store_id', '$groups')");
         if ($result) {
             if (mysqli_affected_rows(self::$getDB) > 0) {
                 return true;
@@ -173,7 +176,10 @@ class User extends DB
     public function update($id_user, $username, $password, $email, $fname, $lname, $phone, $gender, $store_id, $groups)
     {
         if (!$password)
+        {
             $result = self::$getDB->query("UPDATE `users` SET  `id_user` = '$id_user', `username` = '$username', `email` = '$email', `firstname` = '$fname', `lastname` = '$lname', `phone` = '$phone', `gender` = '$gender', `store_id` = '$store_id', `group` = '$groups' WHERE `users`.`id_user` = '$id_user';");
+         
+        }
         else {
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             $result = self::$getDB->query("UPDATE `users` SET  `id_user` = '$id_user', `username` = '$username', `password` = '$hashed_password' , `email` = '$email', `firstname` = '$fname', `lastname` = '$lname', `phone` = '$phone', `gender` = '$gender', `store_id` = '$store_id', `group` = '$groups' WHERE `users`.`id_user` = '$id_user';");

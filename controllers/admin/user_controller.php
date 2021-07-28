@@ -18,6 +18,14 @@
             });
 
             $this->folder = 'admin';
+            MyFunction::loadModule("models.Group");
+            MyFunction::loadModule("models.Store");
+
+            $this->groupModal = new Group();
+            $this->storeModal = new Store();
+
+
+
         }
 
         public function index(){
@@ -55,29 +63,94 @@
             $lname = filter_input(INPUT_POST, 'lname', FILTER_SANITIZE_STRING);
             $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
             $gender = filter_input(INPUT_POST, 'gender', FILTER_SANITIZE_STRING);
-
           
             if (Myfunction::validateRegrex([$username,$password,$email,$fname,$lname,$phone,$gender,$cpassword,$groups])) {
-                $result = $this->userModal->insert($datenow,$username,$password,$email,$fname,$lname,$phone,$gender,'2',$groups);
-                if (!$result) {
-                    MyFunction::send([], $result, "Thêm mới dữ liệu không thành công");
-                    return;
+
+                if (!isset($_FILES["product_image"])) {
+                    MyFunction::redirect("?controller=user&action=index&type=admin", array('name' => 'message-fail-uid', 'value' => 'Bạn chưa gửi ảnh lên'));
+                    exit();
                 }
-                if ($cpassword != $password) {
-                    MyFunction::send([], $result, "Thêm mới dữ liệu không thành công");
-                    return;
+                if ($_FILES["product_image"]['error'] != 0) {
+                    MyFunction::redirect("?controller=user&action=index&type=admin", array('name' => 'message-fail-uid', 'value' => 'Upload ảnh lỗi'));
+                    exit();
                 }
-                $action = '<button type="button" class="btn btn-default" 
-                            onclick="editFunc(\'' . $datenow . '\', this)" 
-                            data-toggle="modal" data-target="#editModal">
-                            <i class="fa fa-pencil"></i>
-                            </button> <button type="button" class="btn btn-default" 
-                            onclick="removeFunc(\'' . $datenow . '\', this)" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
-                MyFunction::send([null, $datenow, $username, $email, $fname,$lname,$phone,$gender,$groups,$action], $result, "Thêm mới dữ liệu thành công");
-                return;
+                $target_dir    = "assets/uploads/";
+                $target_file   = $target_dir . MyFunction::generateRandomString() . "." . pathinfo($_FILES["product_image"]["name"], PATHINFO_EXTENSION);
+                $allowUpload   = true;
+                $imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
+                $maxfilesize   = 900000;
+                $allowtypes    = array('jpg', 'png', 'jpeg', 'gif');
+                if (isset($_POST["submit"])) {
+                    $check = getimagesize($_FILES["product_image"]["tmp_name"]);
+                    if ($check !== false) {
+                        $allowUpload = true;
+                    } else {
+                        MyFunction::redirect("?controller=user&action=index&type=admin", array('name' => 'message-fail-uid', 'value' => 'Upload ảnh lỗi'));
+                        exit();
+                    }
+                }
+                if (file_exists($target_file)) {
+                    MyFunction::redirect("?controller=user&action=index&type=admin", array('name' => 'message-fail-uid', 'value' => 'Upload tên đã tồn tại'));
+                    $allowUpload = false;
+                    exit();
+                }
+                if ($_FILES["product_image"]["size"] > $maxfilesize) {
+                    MyFunction::redirect("?controller=user&action=index&type=admin", array('name' => 'message-fail-uid', 'value' => 'Kích cỡ File quá lớn'));
+                    $allowUpload = false;
+                    exit();
+                }
+                if (!in_array($imageFileType, $allowtypes)) {
+                    MyFunction::redirect("?controller=user&action=index&type=admin", array('name' => 'message-fail-uid', 'value' => 'Sai định dạng'));
+                    $allowUpload = false;
+                    exit();
+                }
+                if ($allowUpload) {
+                    try {
+                        if (move_uploaded_file($_FILES["product_image"]["tmp_name"], $target_file)) {
+                            $data = $this->userModal->insert($datenow,$username,$password,$email,$fname,$lname,$phone,$gender, $target_file,'2',$groups);
+                            if ($data)
+                                MyFunction::redirect("?controller=user&action=index&type=admin", array('name' => 'message-success-uid', 'value' => 'Thêm dữ liệu thành công'));
+                            else {
+                                unlink($target_dir, $target_file);
+                                MyFunction::redirect("?controller=user&action=index&type=admin", array('name' => 'message-fail-uid', 'value' => 'Thêm dữ liệu không thành công'));
+                            }
+                        } else {
+                            MyFunction::redirect("?controller=user&action=index&type=admin", array('name' => 'message-fail-uid', 'value' => 'Đã xảy ra lỗi khi upload'));
+                            exit();
+                        }
+                    } catch (customException $e) {
+                        echo $e->errorMessage();
+                    }
+                } else {
+                    MyFunction::redirect("?controller=user&action=index&type=admin", array('name' => 'message-fail-uid', 'value' => 'Đã xảy ra lỗi'));
+                    exit();
+                }
+
+
+                // $result = $this->userModal->insert($datenow,$username,$password,$email,$fname,$lname,$phone,$gender,'2',$groups);
+                // if (!$result) {
+                //     MyFunction::send([], $result, "Thêm mới dữ liệu không thành công");
+                //     return;
+                // }
+                // if ($cpassword != $password) {
+                //     MyFunction::send([], $result, "Thêm mới dữ liệu không thành công");
+                //     return;
+                // }
+                // $action = '<button type="button" class="btn btn-default" 
+                //             onclick="editFunc(\'' . $datenow . '\', this)" 
+                //             data-toggle="modal" data-target="#editModal">
+                //             <i class="fa fa-pencil"></i>
+                //             </button> <button type="button" class="btn btn-default" 
+                //             onclick="removeFunc(\'' . $datenow . '\', this)" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
+                // MyFunction::send([null, $datenow, $username, $email, $fname,$lname,$phone,$gender,$groups,$action], $result, "Thêm mới dữ liệu thành công");
+                // return;
+            }
+            else
+            {
+                MyFunction::redirect("?controller=user&action=index&type=admin", array('name' => 'message-fail-uid', 'value' => 'Đã xảy ra lỗi valdiate'));
             }
     
-            MyFunction::send([], false, "Thêm mới dữ liệu không thành công");
+            // MyFunction::send([], false, "Thêm mới dữ liệu không thành công");
         }
         public function delete()
         {
@@ -92,17 +165,33 @@
         }
         public function edit()
         {
-            $id_user = filter_input(INPUT_POST, 'id_user', FILTER_SANITIZE_STRING);
-            $result = $this->userModal->edit($id_user);
-            if (count($result) > 0) {
-                MyFunction::send($result, true, null);
-                return;
+
+            $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_STRING);
+            if (!Myfunction::validateRegrex([$id])) {
+                MyFunction::redirect("?controller=group&type=admin&action=error", array('name' => 'message-fail-access', 'value' => 'url không tồn tại , vui lòng kiểm tra lại'));
+                exit();
             }
-            MyFunction::send($result, false, null);
+    
+            $result = $this->userModal->edit($id);
+            $list_group = $this->groupModal->selectAllData();
+            $list_store = $this->storeModal->selectAllData();
+            if (count($result) > 0) {
+                
+                $this->render('User.edit', array('title_content' => ucfirst($GLOBALS['CONTROLLER']), 'data' => $result, 'title' => '', 'action' => '', 'userGroup' => $this->userGroup , 'list_group' => $list_group , 'list_store' =>$list_store), 'layouts.application');
+                exit();
+            }
+            // $id_user = filter_input(INPUT_POST, 'id_user', FILTER_SANITIZE_STRING);
+            // $result = $this->userModal->edit($id_user);
+            // if (count($result) > 0) {
+            //     MyFunction::send($result, true, null);
+            //     return;
+            // }
+            // MyFunction::send($result, false, null);
     
         }
         public function update()
         {
+           
             $id_user = filter_input(INPUT_POST, 'edit_id_user', FILTER_SANITIZE_STRING);
             $groups = filter_input(INPUT_POST, 'edit_groups', FILTER_SANITIZE_STRING);
             $store = filter_input(INPUT_POST, 'edit_store', FILTER_SANITIZE_STRING);
@@ -121,12 +210,12 @@
                 {
                     if($password === $cpassword)
                     {
-                        $result = $this->userModal->update($id_user,$username,$password,$email,$fname,$lname,$phone,$gender,'2',$groups);
+                        $result = $this->userModal->update($id_user,$username,$password,$email,$fname,$lname,$phone,$gender,$store,$groups);
                     }
                     else
                     {
-                        MyFunction::send([], $result, "Cập nhật dữ liệu không thành công");
-
+                        
+                        MyFunction::redirect("?controller=user&action=index&type=admin", array('name' => 'message-success-uid', 'value' => 'Cập nhật thành công'));
                         exit();
                     }
                 }
@@ -134,35 +223,44 @@
                 {
                     if($password === $cpassword)
                     {
-                        $result = $this->userModal->update($id_user,$username,null,$email,$fname,$lname,$phone,$gender,'2',$groups);
+                   
+                        $result = $this->userModal->update($id_user,$username,null,$email,$fname,$lname,$phone,$gender,$store,$groups);
+                      
                     }
                     else
                     {
-                        MyFunction::send([], $result, "Cập nhật dữ liệu không thành công");
-
+                        MyFunction::redirect("?controller=user&action=index&type=admin", array('name' => 'message-fail-uid', 'value' => 'Cập nhật dữ liệu không thành công'));
                         exit();
                     }
                 }
             }
             else
             {
-                MyFunction::send([], $result, "Cập nhật dữ liệu không thành công");
-
-                exit();
+                MyFunction::redirect("?controller=user&action=index&type=admin", array('name' => 'message-fail-uid', 'value' => 'Cập nhật dữ liệu không thành công'));
+                        exit();
             }
             if (!$result) {
-                MyFunction::send([], $result, "Cập nhật dữ liệu không thành công");
-                exit();
+                MyFunction::redirect("?controller=user&action=index&type=admin", array('name' => 'message-fail-uid', 'value' => 'Cập nhật dữ liệu không thành công'));
+                        exit();
             }
-            $action = '<button type="button" class="btn btn-default" 
-            onclick="editFunc(\'' . $id_user . '\', this)" 
-            data-toggle="modal" data-target="#editModal">
-            <i class="fa fa-pencil"></i>
-            </button> <button type="button" class="btn btn-default" 
-            onclick="removeFunc(\'' . $id_user . '\', this)" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
-            MyFunction::send([null, $id_user, $username, $email, $fname,$lname,$phone,$gender,$groups,$action], $result, "Thêm mới dữ liệu thành công");
-            return;
+       
+            MyFunction::redirect("?controller=user&action=index&type=admin", array('name' => 'message-success-uid', 'value' => 'Cập nhật thành công'));
+            exit();
         }
+
+        
+    public function create()
+    {
+
+
+        $list_group = $this->groupModal->selectAllData();
+        $list_store = $this->storeModal->selectAllData();
+
+
+        $this->render('user.create', array(
+            'title_content' => ucfirst($GLOBALS['CONTROLLER']), 'userGroup' => $this->userGroup , 'list_group' => $list_group , 'list_store' =>$list_store
+        ), 'layouts.application');
+    }
     }
 
 ?>

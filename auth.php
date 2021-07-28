@@ -7,10 +7,12 @@ class Auth
     {
         if(!isset($_SESSION['user']))
             $permission = 10;
-        else         
+        else   {     
             $permission = $getUserGroup(json_decode($_SESSION['user'], true)[0]['id_user'])[0]->table_group->id;  
-            $getPermission = $getPermission($permission);
-        if(!$getPermission)
+            $getPermission1 = $getPermission($permission);
+           
+        }
+        if(!$getPermission1)
         {
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest')) {
                 MyFunction::send([], false, "Bạn không có quyền truy cập");
@@ -30,7 +32,7 @@ class Auth
             }
         } 
         }
-        return $getPermission;
+        return $getPermission1;
        
     }
 

@@ -12,8 +12,8 @@
           <h3 class="box-title"><?php if (isset($title)) echo "UPDATE PRODUCT";
                                 else echo "ADD PRODUCT" ?></h3>
         </div>
-        <form role="form" action="<?php if (isset($action)) echo "?controller=category&action=update&type=admin";
-                                  else echo "?controller=category&action=insert&type=admin" ?>" onsubmit="return validate();" method="post" enctype="multipart/form-data">
+        <form role="form" action="<?php if (isset($action)) echo "?controller=product&action=update&type=admin";
+                                  else echo "?controller=product&action=insert&type=admin" ?>" onsubmit="return validate();" method="post" enctype="multipart/form-data">
                                 
           <div class="box-body">
           <input type="hidden" value="<?php if(isset($action)) echo $data[0]->id ?>" class="form-control" id="id" name="id" placeholder="Enter group name" autocomplete="off" required>
@@ -59,27 +59,52 @@
                   description" autocomplete="off"><?php if (isset($action)) echo $data[0]->description ?></textarea>
 
             </div>
-
+          
             <div class="form-group">
               <label for="category">Category</label>
-              <select class="form-control select_group" id="category"  name="category" multiple="multiple">
+              <select class="form-control select_group" id="category"  value="" name="category" multiple="multiple">
+
+              <?php
+              if(!isset($action))
+              {
+                if (count($list_category) > 0) {
+                  foreach ($list_category as $key => $value) {
+                ?>
+                    <option value="<?= $value->id ?>"><?= $value->name ?></option>
+
+                <?php
+                  }
+                }
+              }
+            else{
+              if (count($list_category) > 0) {
+                foreach ($list_category as $key => $value) {
+            }
+                ?>
+                    
+                                       <option value="<?= $value->id ?>"
+                                        <?php
+                                        if((int)$value->id ===(int)$data[0]->category_id){
+                                            echo "selected";
+                                        }
+                                         ?>
+                                        ><?= $value->name ?></option>
+
+                                <?php
+                                    }
+                                }
+                                ?>
+
+<!-- 
                 <option value="1" <?php  if (isset($action) and $data[0]->category_id == "1")echo "selected"?>>1</option>
-                <option value="2" <?php  if (isset($action) and $data[0]->category_id == "2")echo "selected"?>>2</option>
+                <option value="2" <?php  if (isset($action) and $data[0]->category_id == "2")echo "selected"?>>2</option> -->
 
               </select>
               <p id="err_category" class="hide-elm text-danger">The Store name field is required.</p>
 
             </div>
 
-            <div class="form-group">
-              <label for="store">Store</label>
-              <select class="form-control select_group" id="store"  name="store" multiple="multiple">
-                <option value="1" <?php  if (isset($action) and $data[0]->store_id == "1") echo "selected" ?>>1</option>
-                <option value="2" <?php if (isset($action) and $data[0]->store_id == "2") echo "selected" ?>>2</option>
-              </select>
-              <p id="err_store" class="hide-elm text-danger">The Store name field is required.</p>
-
-            </div>
+   
 
             <div class="form-group">
               <label for="store">Active</label>
@@ -109,4 +134,4 @@
 
 
 </section>
-<script src="assets/admin/dist/js/product.js"></script>
+<script src="assets/admin/dist/js/product.js?ver=01"></script>

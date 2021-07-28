@@ -1,9 +1,1 @@
-<?php
-namespace C\B;
-class X{
-    static function test()
-    {
-        echo "asd";
-    }
-}
-?>
+{"user":{"page":["error"],"dashboard":{"index":{"isLogin":true}},"bill":{"index":{"isLogin":true}},"user":{"index":{"isLogin":true}}},"admin":{"page":["error","err_404"],"dashboard":{"index":{"isLogin":true}},"bill":["index"],"user":{"index":{"isLogin":true},"insert":{"isLogin":true},"delete":{"isLogin":true},"edit":{"isLogin":true},"update":{"isLogin":true}},"group":{"index":{"isLogin":true},"0":"create","insert":{"isLogin":true},"update":{"isLogin":true},"edit":{"isLogin":true},"delete":{"isLogin":true},"1":"error"},"store":{"index":{"isLogin":false},"insert":{"isLogin":false},"delete":{"isLogin":true},"edit":{"isLogin":true},"update":{"isLogin":true}},"product":{"index":{"isLogin":true},"0":"create","insert":{"isLogin":true},"delete":{"isLogin":true},"edit":{"isLogin":true},"update":{"isLogin":true}},"category":{"index":{"isLogin":true},"0":"create","insert":{"isLogin":true},"delete":{"isLogin":true},"edit":{"isLogin":true},"update":{"isLogin":true}},"company":{"index":{"isLogin":true},"update":{"isLogin":true},"0":"error"},"profile":{"index":{"isLogin":true}},"setting":{"index":{"isLogin":true},"update":{"isLogin":true}},"auth":["index","login","logout"]}}

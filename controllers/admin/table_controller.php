@@ -1,7 +1,7 @@
 <?php
 MyFunction::loadModule('controllers.base_controller');
 
-class CategoryController extends BaseController
+class TableController extends BaseController
 {
 
 
@@ -19,8 +19,11 @@ class CategoryController extends BaseController
                 return $this->userModal->getPermission($permission);
             }
         );
-        MyFunction::loadModule("models.Category");
-        $this->categoryModal = new Category();
+        MyFunction::loadModule("models.Table");
+        $this->tableModal = new Table();
+        MyFunction::loadModule("models.Store");
+        $this->storeModal = new Store();
+
         $this->folder = 'admin';
     }
 
@@ -43,10 +46,10 @@ class CategoryController extends BaseController
         $td_action = null;
 
 
-
-        $data = $this->categoryModal->selectAllData();
-        $this->render('category.index', array(
-            'title_content' => ucfirst($GLOBALS['CONTROLLER']),'access' => ['insert' => $insert , 'update'=>$update, 'delete' => $delete , "td_action" => $td_action], 'userGroup' => $this->userGroup, 'data' => $data
+        $list_store = $this->storeModal->selectAllData();
+        $data = $this->tableModal->selectAllData();
+        $this->render('table.index', array(
+            'title_content' => ucfirst($GLOBALS['CONTROLLER']),'access' => ['insert' => $insert , 'update'=>$update, 'delete' => $delete , "td_action" => $td_action], 'userGroup' => $this->userGroup, 'data' => $data, 'list_store'=>$list_store
         ), 'layouts.application');
     }
 
@@ -54,16 +57,16 @@ class CategoryController extends BaseController
     {
 
 
-        $data = $this->categoryModal->selectAllData();
+        $data = $this->tableModal->selectAllData();
 
-        $this->render('category.create', array(
+        $this->render('table.create', array(
             'title_content' => ucfirst($GLOBALS['CONTROLLER']), 'userGroup' => $this->userGroup
         ), 'layouts.application');
     }
     public function edit()
     {
-        $id_category = filter_input(INPUT_POST, 'id_category', FILTER_SANITIZE_STRING);
-        $result = $this->categoryModal->edit($id_category);
+        $id_table = filter_input(INPUT_POST, 'id_table', FILTER_SANITIZE_STRING);
+        $result = $this->tableModal->edit($id_table);
         if (count($result) > 0) {
             MyFunction::send($result, true, null);
             return;
@@ -73,12 +76,14 @@ class CategoryController extends BaseController
     }
     public function insert()
     {
-        $datenow = "DM" . intval(microtime(true) * 1000);
+        $datenow = "T" . intval(microtime(true) * 1000);
         $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
         $active = filter_input(INPUT_POST, 'active', FILTER_SANITIZE_STRING);
+        $store_id = filter_input(INPUT_POST, 'store_id', FILTER_SANITIZE_STRING);
+
         
-        if (Myfunction::validateRegrex([$name, $active])) {
-            $result = $this->categoryModal->insert($name, $active, $datenow);
+        if (Myfunction::validateRegrex([$name, $active,$store_id])) {
+            $result = $this->tableModal->insert($name, $active, $datenow, $store_id);
             if (!$result) {
                 MyFunction::send([], $result, "Thêm mới dữ liệu không thành công");
                 return;
@@ -90,14 +95,14 @@ class CategoryController extends BaseController
                         </button> <button type="button" class="btn btn-default" 
                         onclick="removeFunc(\'' . $datenow . '\', this)" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
             $active = '<span class="label label-success">' . $active . '</span>';
-            MyFunction::send([null, $datenow, $name, $active, $action], $result, "Thêm mới dữ liệu thành công");
+            MyFunction::send([null, $datenow, $name, $active,$store_id, $action], $result, "Thêm mới dữ liệu thành công");
             return;
         }
     }
     public function delete()
     {
-        $id_category = filter_input(INPUT_POST, 'id_category', FILTER_SANITIZE_STRING);
-        $result = $this->categoryModal->delete($id_category);
+        $id_table = filter_input(INPUT_POST, 'id_table', FILTER_SANITIZE_STRING);
+        $result = $this->tableModal->delete($id_table);
         if (!$result) {
             MyFunction::send([], $result, "Xóa dữ liệu không thành công");
             return;
@@ -114,23 +119,25 @@ class CategoryController extends BaseController
     }
     public function update()
     {
-        $id_category = trim(filter_input(INPUT_POST, 'id_category', FILTER_SANITIZE_STRING));
+        $id_table = trim(filter_input(INPUT_POST, 'id_table', FILTER_SANITIZE_STRING));
         $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);
         $active = filter_input(INPUT_POST, 'active', FILTER_SANITIZE_STRING);
+        $store_id = filter_input(INPUT_POST, 'store_id', FILTER_SANITIZE_STRING);
+
         $action = '<button type="button" class="btn btn-default" 
-        onclick="editFunc(' . $id_category . ')" 
+        onclick="editFunc(' . $id_table . ')" 
         data-toggle="modal" data-target="#editModal">
         <i class="fa fa-pencil"></i>
         </button> <button type="button" class="btn btn-default" 
-        onclick="removeFunc(\'' . $id_category . '\', this)" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
+        onclick="removeFunc(\'' . $id_table . '\', this)" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
 
-        $result = $this->categoryModal->update($id_category, $name, $active);
+        $result = $this->tableModal->update($id_table, $name, $active, $store_id);
         $active = '<span class="label label-success">' . $active . '</span>';
 
         if (!$result) {
             MyFunction::send([], $result, "Cập nhật dữ liệu không thành công");
             return;
         }
-        MyFunction::send(array(null, $id_category, $name, $active, $action), $result, "Cập nhật dữ liệu thành công");   
+        MyFunction::send(array(null, $id_table, $name, $active,$store_id, $action), $result, "Cập nhật dữ liệu thành công");   
     }
 }

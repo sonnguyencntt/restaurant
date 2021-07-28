@@ -19,7 +19,7 @@
         }
 
         public function error(){
-            $this->render('page.error',array('title_content'=>ucfirst($GLOBALS['CONTROLLER'])),'layouts.application');
+            $this->render('page.error',array('title_content'=>ucfirst($GLOBALS['CONTROLLER']),'page_error' =>true),'layouts.application');
         }
         public function error_404(){
             $this->render('page.error_404',array('title_content'=>"ERROR" ,'error_404' => '' ),'layouts.application');
